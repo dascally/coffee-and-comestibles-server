@@ -2,13 +2,18 @@
   "name": "coffee-and-comestibles-server",
   "version": "1.0.0",
   "description": "Server and API for the fictional bakery-cafe website",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Danny Scally",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }
