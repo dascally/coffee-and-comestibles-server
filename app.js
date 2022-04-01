@@ -7,7 +7,6 @@ import users from './routes/users.js';
 
 const app = express();
 if (process.env.NODE_ENV === 'development') {
-  console.log('in dev, logging');
   app.use(morgan('dev'));
 }
 
