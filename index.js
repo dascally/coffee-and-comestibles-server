@@ -1,7 +1,6 @@
 import http from 'http';
 import app from './app.js';
-
-const PORT = 3002;
+import { PORT } from './utils/config.js';
 
 const server = http.createServer(app);
 server.listen(PORT, () => {
