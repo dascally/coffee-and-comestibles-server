@@ -35,10 +35,10 @@ router
     res.end(`POST to create paymentInfo for user ${req.params.userId}`);
   })
   .put((req, res) => {
-    res.end(`PUT not supported for payment info.`);
+    res.end('PUT not supported for payment info.');
   })
   .delete((req, res) => {
-    res.end(`DELETE not supported for paymentInfo without ID`);
+    res.end('DELETE not supported for paymentInfo without ID');
   });
 router.post('/:userId/paymentInfo/:paymentInfoId', (req, res) => {
   res.end(
@@ -65,10 +65,10 @@ router
     res.end(`POST to create saved order for user ${req.params.userId}`);
   })
   .put((req, res) => {
-    res.end(`PUT not supported for saved orders.`);
+    res.end('PUT not supported for saved orders.');
   })
   .delete((req, res) => {
-    res.end(`DELETE not supported for savedOrders without ID`);
+    res.end('DELETE not supported for savedOrders without ID');
   });
 router.post('/:userId/savedOrders/:savedOrderId', (req, res) => {
   res.end(
@@ -95,10 +95,10 @@ router
     res.end(`POST to update rewards points for user ${req.params.userId}`);
   })
   .put((req, res) => {
-    res.end(`PUT not supported for rewards.`);
+    res.end('PUT not supported for rewards.');
   })
   .delete((req, res) => {
-    res.end(`DELETE not supported for rewards.`);
+    res.end('DELETE not supported for rewards.');
   });
 
 export default router;
