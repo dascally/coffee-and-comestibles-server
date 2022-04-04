@@ -1,15 +1,16 @@
 import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   firstName: {
     type: String,
     required: true,
   },
   lastName: {
-    type: String,
-    required: true,
-  },
-  email: {
     type: String,
     required: true,
   },
@@ -19,7 +20,7 @@ const userSchema = mongoose.Schema({
   },
   rewards: {
     type: Number,
-    required: true,
+    default: 0,
   },
   savedPayments: [
     {
