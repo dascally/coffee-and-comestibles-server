@@ -16,17 +16,20 @@ Content-Type: application/json
 {
     "contactPhone": "123-555-6789",
     "contactName": "Namica Con",
-    "ccInfo": "1234-ph-value-5678",
-    "user": "0000-ph-value-9999",
+    "ccInfo": null,
+    "user": null,
     "orderList": [
         {
-            "menuItem": "ph-value-1"
+            "menuItem": "624b5eac576d34717d67e8a1",
+            "selectedOptions": {
+                "Milk type": "Macadamia milk"
+            }
         },
         {
-            "menuItem": "ph-value-2"
+            "menuItem": "624b5eac576d34717d67e8a6"
         },
         {
-            "menuItem": "ph-value-3"
+            "menuItem": "624b5eac576d34717d67e8a4"
         }
     ]
 }
