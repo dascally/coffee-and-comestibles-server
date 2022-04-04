@@ -1,28 +1,65 @@
 import express from 'express';
+import MenuItem from '../models/menuItem.js';
 const router = express.Router();
 
 router
   .route('/')
-  .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
+  .get(async (req, res, next) => {
+    try {
+      const menuItems = await MenuItem.find({});
+      return res.status(200).json(menuItems);
+    } catch (err) {
+      next(err);
+    }
   })
-  .get((req, res) => {
-    res.end('/menu got a GET request.');
+  .post(async (req, res, next) => {
+    try {
+      const {
+        name,
+        menuSection,
+        description,
+        image,
+        allergens,
+        price,
+        options,
+      } = req.body;
+
+      const newMenuItem = new MenuItem({
+        name,
+        menuSection,
+        description,
+        image,
+        allergens,
+        price,
+        options,
+      });
+      const savedMenuItem = await newMenuItem.save();
+
+      return res
+        .status(201)
+        .set('Location', `/${savedMenuItem._id}`)
+        .json(savedMenuItem);
+    } catch (err) {
+      next(err);
+    }
   })
-  .post((req, res) => {
-    res.end(
-      'POST not supported but maybe eventually allow an admin to update menu.'
-    );
+  .put((req, res, next) => {
+    try {
+      res.status(405).set('Allow', 'GET, POST').json({
+        message: 'PUT is not supported on the /menu path. Try /menu/${ID}.',
+      });
+    } catch (err) {
+      next(err);
+    }
   })
-  .put((req, res) => {
-    res.end(
-      'PUT not supported but maybe eventually allow an admin to update menu.'
-    );
-  })
-  .delete((req, res) => {
-    res.end('DELETE not supported for menu.');
+  .delete((req, res, next) => {
+    try {
+      res.status(405).set('Allow', 'GET, POST').json({
+        message: 'DELETE is not supported on the /menu path. Try /menu/${ID}.',
+      });
+    } catch (err) {
+      next(err);
+    }
   });
 
 export default router;
