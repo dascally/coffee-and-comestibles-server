@@ -10,13 +10,12 @@ const menuItemSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-  },
+  description: String,
   image: {
     type: String,
     // FIXME: Add a default path
   },
+  allergens: [String],
   price: {
     type: Number,
     required: true,
