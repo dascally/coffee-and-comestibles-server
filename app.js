@@ -1,8 +1,8 @@
 import express from 'express';
-import events from './routes/events.js';
-import menu from './routes/menu.js';
-import order from './routes/order.js';
-import users from './routes/users.js';
+import eventsRouter from './routes/events.js';
+import menuRouter from './routes/menu.js';
+import orderRouter from './routes/order.js';
+import usersRouter from './routes/users.js';
 
 const app = express();
 
@@ -11,9 +11,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use('/events', events);
-app.use('/menu', menu);
-app.use('/order', order);
-app.use('/users', users);
+app.use('/events', eventsRouter);
+app.use('/menu', menuRouter);
+app.use('/order', orderRouter);
+app.use('/users', usersRouter);
 
 export default app;
