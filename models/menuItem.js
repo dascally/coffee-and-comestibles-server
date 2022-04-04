@@ -12,8 +12,8 @@ const menuItemSchema = mongoose.Schema({
   },
   description: String,
   image: {
-    type: String,
-    // FIXME: Add a default path
+    src: String,
+    alt: String,
   },
   allergens: [String],
   price: {
