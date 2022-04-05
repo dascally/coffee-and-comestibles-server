@@ -27,4 +27,12 @@ app.use('/menu', menuRouter);
 app.use('/orders', ordersRouter);
 app.use('/users', usersRouter);
 
+app.use((err, req, res, next) => {
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({ message: err.message });
+  }
+
+  return next(err);
+});
+
 export default app;
