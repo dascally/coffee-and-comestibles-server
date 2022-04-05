@@ -45,7 +45,7 @@ router
   })
   .put((req, res, next) => {
     try {
-      res.status(405).set('Allow', 'GET, POST').json({
+      return res.status(405).set('Allow', 'GET, POST').json({
         message: 'PUT is not supported on the /menu path. Try /menu/${ID}.',
       });
     } catch (err) {
@@ -54,9 +54,65 @@ router
   })
   .delete((req, res, next) => {
     try {
-      res.status(405).set('Allow', 'GET, POST').json({
+      return res.status(405).set('Allow', 'GET, POST').json({
         message: 'DELETE is not supported on the /menu path. Try /menu/${ID}.',
       });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router
+  .route('/:menuItemId')
+  .get(async (req, res, next) => {
+    try {
+      const menuItem = await MenuItem.findById(req.params.menuItemId);
+
+      if (menuItem) {
+        return res.status(200).json(menuItem);
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      next(err);
+    }
+  })
+  .post((req, res, next) => {
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, PUT, DELETE')
+        .json({ message: 'POST is not supported on the /menu/${ID} path.' });
+    } catch (err) {
+      next(err);
+    }
+  })
+  .put(async (req, res, next) => {
+    try {
+      const updatedMenuItem = await MenuItem.findByIdAndUpdate(
+        req.params.menuItemId,
+        req.body,
+        { new: true, runValidators: true }
+      );
+
+      if (updatedMenuItem) {
+        return res.status(200).json(updatedMenuItem);
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      next(err);
+    }
+  })
+  .delete(async (req, res, next) => {
+    try {
+      const result = await MenuItem.findByIdAndDelete(req.params.menuItemId);
+
+      if (result) {
+        return res.status(204).end();
+      } else {
+        return res.status(404).end();
+      }
     } catch (err) {
       next(err);
     }

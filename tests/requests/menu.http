@@ -21,3 +21,31 @@ PUT http://localhost:3002/menu HTTP/1.1
 
 ###
 DELETE http://localhost:3002/menu HTTP/1.1
+
+###
+
+GET http://localhost:3002/menu/624b8ad84da1ea954dc9fece HTTP/1.1
+
+###
+
+POST http://localhost:3002/menu/624b8a33b52113f58e0b19f5 HTTP/1.1
+
+###
+PUT http://localhost:3002/menu/624b8ad84da1ea954dc9fece HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Pickled cocoa beans",
+    "menuSection": "Baked savory",
+    "description": "Another experimental conconction.",
+    "image": {
+        "src": "../assets/latte-1.jpg",
+        "alt": "A latte in a mug"
+    },
+    "allergens": [],
+    "price": 700
+}
+
+###
+
+DELETE http://localhost:3002/menu/624b8ad84da1ea954dc9fece HTTP/1.1
