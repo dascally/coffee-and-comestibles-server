@@ -24,8 +24,6 @@ router
         orderList: rawOrderList,
       } = req.body;
 
-      console.log('rawOrderList', rawOrderList);
-
       const cookedOrderList = await Promise.all(
         rawOrderList.map(async (orderItem) => {
           const newOrderItem = new OrderItem(orderItem);
@@ -74,22 +72,93 @@ router
 
 router
   .route('/:orderId')
-  .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
+  .get(async (req, res, next) => {
+    try {
+      const invoice = await Invoice.findById(req.params.orderId);
+
+      if (invoice) {
+        return res.status(200).json(invoice);
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      next(err);
+    }
   })
-  .get((req, res) => {
-    res.end(`GET order info for order ${req.params.orderId}.`);
+  .post(async (req, res, next) => {
+    try {
+      const invoice = await Invoice.findById(req.params.orderId);
+      if (!invoice) {
+        return res.status(404).end();
+      }
+
+      if (invoice.status === 'received' && req.body.status === 'canceled') {
+        invoice.status = req.body.status;
+        const updatedInvoice = await invoice.save();
+        return res.status(200).json(updatedInvoice);
+      } else {
+        return res.status(400).json({
+          message: 'POST may only be used to cancel a standing order.',
+        });
+      }
+    } catch (err) {
+      next(err);
+    }
   })
-  .post((req, res) => {
-    res.end(`POST to edit order ${req.params.orderId}.`);
+  .put(async (req, res, next) => {
+    try {
+      const invoice = await Invoice.findById(req.params.orderId);
+      if (!invoice) {
+        return res.status(404).end();
+      } else if (invoice.status !== 'received') {
+        return res
+          .status(400)
+          .json({ message: 'PUT may only be used to modify standing orders.' });
+      }
+
+      const {
+        contactPhone,
+        contactName,
+        ccInfo,
+        user,
+        orderList: rawOrderList,
+      } = req.body;
+
+      const cookedOrderList = await Promise.all(
+        rawOrderList.map(async (orderItem) => {
+          const newOrderItem = new OrderItem(orderItem);
+          const savedOrderItem = await newOrderItem.save();
+          return savedOrderItem._id;
+        })
+      );
+
+      const updatedInvoice = await Invoice.findByIdAndUpdate(
+        req.params.orderId,
+        {
+          status: 'received',
+          contactPhone,
+          contactName,
+          ccInfo,
+          user,
+          orderList: cookedOrderList,
+        },
+        { new: true, runValidators: true }
+      );
+
+      return res.status(200).json(updatedInvoice);
+    } catch (err) {
+      next(err);
+    }
   })
-  .put((req, res) => {
-    res.end('PUT not supported on /order/:orderId.');
-  })
-  .delete((req, res) => {
-    res.end(`Cancel order ${req.params.orderId}.`);
+  .delete((req, res, next) => {
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, POST, PUT')
+        .json({ message: 'DELETE is not supported on the /order/${ID} path.' });
+    } catch (err) {
+      next(err);
+    }
   });
 
 export default router;

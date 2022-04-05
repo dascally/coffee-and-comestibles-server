@@ -2,14 +2,6 @@ GET http://localhost:3002/orders HTTP/1.1
 
 ###
 
-PUT http://localhost:3002/orders HTTP/1.1
-
-###
-
-DELETE http://localhost:3002/orders HTTP/1.1
-
-###
-
 POST http://localhost:3002/orders HTTP/1.1
 Content-Type: application/json
 
@@ -33,3 +25,71 @@ Content-Type: application/json
         }
     ]
 }
+
+###
+
+PUT http://localhost:3002/orders HTTP/1.1
+
+###
+
+DELETE http://localhost:3002/orders HTTP/1.1
+
+###
+
+GET http://localhost:3002/orders/624b65d258f1907aa782c489 HTTP/1.1
+
+###
+
+GET http://localhost:3002/orders/624ba12e1d60cdee2a198f7d HTTP/1.1
+
+
+###
+POST http://localhost:3002/orders/624b65d258f1907aa782c489 HTTP/1.1
+Content-Type: application/json
+
+{
+  "status": "canceled"
+}
+
+# {
+#   "status": "received"
+#   "contactPhone": "123-555-6789",
+#   "contactName": "Namica Con",
+#   "ccInfo": null,
+#   "user": null,
+#   "orderList": [
+#     "624b65d258f1907aa782c483",
+#     "624b65d258f1907aa782c484",
+#     "624b65d258f1907aa782c485"
+#   ]
+# }
+
+###
+
+PUT http://localhost:3002/orders/624ba12e1d60cdee2a198f7d HTTP/1.1
+Content-Type: application/json
+
+{
+    "contactPhone": "123-555-6789",
+    "contactName": "Comica Nom",
+    "ccInfo": null,
+    "user": null,
+    "orderList": [
+        {
+            "menuItem": "624b5eac576d34717d67e8a1",
+            "selectedOptions": {
+                "Milk type": "Macadamia milk"
+            }
+        },
+        {
+            "menuItem": "624b5eac576d34717d67e8a6"
+        },
+        {
+            "menuItem": "624b5eac576d34717d67e8a4"
+        }
+    ]
+}
+
+###
+
+DELETE http://localhost:3002/orders/624b65d258f1907aa782c489 HTTP/1.1
