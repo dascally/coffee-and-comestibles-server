@@ -5,15 +5,6 @@ const router = express.Router();
 
 router
   .route('/')
-  .get((req, res, next) => {
-    try {
-      return res.status(405).set('Allow', 'POST').json({
-        message: 'GET is not supported on the /users path. Try /users/${ID}.',
-      });
-    } catch (err) {
-      return next(err);
-    }
-  })
   .post(async (req, res, next) => {
     try {
       const { email, firstName, lastName, password } = req.body;
@@ -39,23 +30,16 @@ router
       return next(err);
     }
   })
-  .put((req, res, next) => {
+  .all((req, res, next) => {
     try {
-      res.status(405).set('Allow', 'POST').json({
-        message: 'PUT is not supported on the /users path.',
-      });
+      return res
+        .status(405)
+        .set('Allow', 'POST')
+        .json({
+          message: `${req.method} is not supported on the /users path.`,
+        });
     } catch (err) {
-      next(err);
-    }
-  })
-  .delete((req, res, next) => {
-    try {
-      res.status(405).set('Allow', 'POST').json({
-        message:
-          'DELETE is not supported on the /users path. Try /users/${ID}.',
-      });
-    } catch (err) {
-      next(err);
+      return next(err);
     }
   });
 
