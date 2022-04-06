@@ -58,22 +58,55 @@ router
 
 router
   .route('/:userId')
+  .get(userExtractor, async (req, res, next) => {
+    try {
+      if (req.params.userId === req.user?._id.toString() || req.user?.admin) {
+        const user = await User.findById(req.params.userId);
+        return res.status(200).json(user);
+      } else {
+        const err = new Error(
+          "You are not authorized to view other users' data."
+        );
+        err.name = 'AuthError';
+        err.status = 403;
+        throw err;
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .delete(userExtractor, async (req, res, next) => {
+    try {
+      if (req.params.userId === req.user?._id.toString() || req.user?.admin) {
+        const result = await User.findByIdAndDelete(req.params.userId);
+        if (result) {
+          return res.status(204).end();
+        } else {
+          return res.status(404).end();
+        }
+      } else {
+        const err = new Error(
+          "You are not authorized to delete other users' accounts."
+        );
+        err.name = 'AuthError';
+        err.status = 403;
+        throw err;
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
   .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
-  .get((req, res) => {
-    res.end(`GET all user data for user ${req.params.userId}`);
-  })
-  .post((req, res) => {
-    res.end(`POST to update account info for user ${req.params.userId}`);
-  })
-  .put((req, res) => {
-    res.end(`PUT to create user account ${req.params.userId}.`);
-  })
-  .delete((req, res) => {
-    res.end(`DELETE user ${req.params.userId}.`);
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, DELETE')
+        .json({
+          message: `${req.method} is not supported on the /users/\${ID} path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
   });
 
 router
