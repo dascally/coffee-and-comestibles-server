@@ -32,17 +32,35 @@ const userExtractor = async (req, res, next) => {
 
 const verifyAdmin = async (req, res, next) => {
   try {
-    if (!req.user?.admin) {
+    if (req.user?.admin) {
+      return next();
+    } else {
       const err = new Error('Only admins can perform that action.');
       err.name = 'AuthError';
       err.status = 403;
       throw err;
     }
-
-    return next();
   } catch (err) {
     return next(err);
   }
 };
 
-export { userExtractor, verifyAdmin };
+const verifySelfOrAdmin = async (req, res, next) => {
+  try {
+    if (
+      req.user &&
+      (req.params.userId === req.user._id.toString() || req.user.admin)
+    ) {
+      return next();
+    } else {
+      const err = new Error('You are not authorized to perform that action.');
+      err.name = 'AuthError';
+      err.status = 403;
+      throw err;
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+export { userExtractor, verifyAdmin, verifySelfOrAdmin };

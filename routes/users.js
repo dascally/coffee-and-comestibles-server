@@ -1,6 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { userExtractor, verifyAdmin } from '../utils/middleware.js';
+import {
+  userExtractor,
+  verifyAdmin,
+  verifySelfOrAdmin,
+} from '../utils/middleware.js';
 import User from '../models/user.js';
 const router = express.Router();
 
@@ -8,10 +12,11 @@ router
   .route('/')
   .get(userExtractor, verifyAdmin, async (req, res, next) => {
     try {
-      const users = await User.find({}).populate([
-        'savedPayments',
-        'savedOrders',
-      ]);
+      const users = await User.find({});
+      // .populate([
+      //   'savedPayments',
+      //   'savedOrders',
+      // ]);
 
       return res.status(200).json(users);
     } catch (err) {
@@ -58,39 +63,21 @@ router
 
 router
   .route('/:userId')
-  .get(userExtractor, async (req, res, next) => {
+  .get(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
-      if (req.params.userId === req.user?._id.toString() || req.user?.admin) {
-        const user = await User.findById(req.params.userId);
-        return res.status(200).json(user);
-      } else {
-        const err = new Error(
-          "You are not authorized to view other users' data."
-        );
-        err.name = 'AuthError';
-        err.status = 403;
-        throw err;
-      }
+      const user = await User.findById(req.params.userId);
+      return res.status(200).json(user);
     } catch (err) {
       return next(err);
     }
   })
-  .delete(userExtractor, async (req, res, next) => {
+  .delete(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
-      if (req.params.userId === req.user?._id.toString() || req.user?.admin) {
-        const result = await User.findByIdAndDelete(req.params.userId);
-        if (result) {
-          return res.status(204).end();
-        } else {
-          return res.status(404).end();
-        }
+      const result = await User.findByIdAndDelete(req.params.userId);
+      if (result) {
+        return res.status(204).end();
       } else {
-        const err = new Error(
-          "You are not authorized to delete other users' accounts."
-        );
-        err.name = 'AuthError';
-        err.status = 403;
-        throw err;
+        return res.status(404).end();
       }
     } catch (err) {
       return next(err);
