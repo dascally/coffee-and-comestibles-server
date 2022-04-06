@@ -25,13 +25,13 @@ const userSchema = mongoose.Schema({
   savedPayments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Payment',
+      ref: 'PaymentInfo',
     },
   ],
   savedOrders: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Order',
+      ref: 'SavedOrder',
     },
   ],
 });
