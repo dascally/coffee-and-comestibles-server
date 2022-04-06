@@ -38,6 +38,11 @@ app.use((err, req, res, next) => {
     }
 
     return res.status(err.status ?? 403).json({ message: err.message });
+  } else if (err.name === 'TokenExpiredError') {
+    res
+      .status(401)
+      .set('WWW-Authenticate', 'Bearer')
+      .json({ message: err.message });
   }
 
   return next(err);
