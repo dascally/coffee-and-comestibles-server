@@ -1,5 +1,5 @@
 GET http://localhost:3002/users HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQyYjUyM2I2N2RjNTg2YTE0N2Q0NCIsImlhdCI6MTY0OTIyOTIyNiwiZXhwIjoxNjQ5MjMyODI2fQ.jogB9iIu7flgDNwL2hY4AGzNVlV6Orm1k95py6uuxW8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlNzUyNDRjYWNjMzA1NzQxYiIsImlhdCI6MTY0OTI3OTUyNywiZXhwIjoxNjQ5MjgzMTI3fQ.j03nQgYWfGWOjbh29MD4hVw6zvM4FRJLF-h0StGq6NU
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTIyOTMwNCwiZXhwIjoxNjQ5MjMyOTA0fQ.3YEqfVebCh1bS_K0GCQ3JbDuEbZpQxt4x4SsTHHw_t4
 
 ###
@@ -64,3 +64,34 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQyYjUyM
 
 DELETE http://localhost:3002/users/624d2b523b67dc586a147d44 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQyYjUyM2I2N2RjNTg2YTE0N2Q0NCIsImlhdCI6MTY0OTIyOTIyNiwiZXhwIjoxNjQ5MjMyODI2fQ.jogB9iIu7flgDNwL2hY4AGzNVlV6Orm1k95py6uuxW8
+
+###
+
+GET http://localhost:3002/users/624d34ac023215e067762c00/savedPayments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTI3OTQ1NywiZXhwIjoxNjQ5MjgzMDU3fQ.2sH5aa3Xzk7-6vvxxAXSh9HpioTHqsLwK2PHyoWeiwo
+
+###
+
+POST http://localhost:3002/users/624d34ac023215e067762c00/savedPayments HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTI3OTQ1NywiZXhwIjoxNjQ5MjgzMDU3fQ.2sH5aa3Xzk7-6vvxxAXSh9HpioTHqsLwK2PHyoWeiwo
+
+{
+  "cardNumber": "1234-5678-8765-4321",
+  "securityCode": "123",
+  "billingName": "Ebidaj Paleu",
+  "streetAddress": "123 Street Road",
+  "city": "Citypolis",
+  "state": "ST",
+  "zipCode": "12345"
+}
+
+###
+
+PUT http://localhost:3002/users/624d34ac023215e067762c00/savedPayments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTI3OTQ1NywiZXhwIjoxNjQ5MjgzMDU3fQ.2sH5aa3Xzk7-6vvxxAXSh9HpioTHqsLwK2PHyoWeiwo
+
+###
+
+DELETE http://localhost:3002/users/624d34ac023215e067762c00/savedPayments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTI3OTQ1NywiZXhwIjoxNjQ5MjgzMDU3fQ.2sH5aa3Xzk7-6vvxxAXSh9HpioTHqsLwK2PHyoWeiwo

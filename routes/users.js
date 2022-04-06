@@ -6,6 +6,7 @@ import {
   verifySelfOrAdmin,
 } from '../utils/middleware.js';
 import User from '../models/user.js';
+import PaymentInfo from '../models/paymentInfo.js';
 const router = express.Router();
 
 router
@@ -97,23 +98,42 @@ router
   });
 
 router
-  .route('/:userId/paymentInfo')
+  .route('/:userId/savedPayments')
+  .get(userExtractor, async (req, res, next) => {
+    try {
+      const user = await req.user.populate('savedPayments');
+      return res.status(200).json(user.savedPayments);
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .post(userExtractor, async (req, res, next) => {
+    try {
+      const newPaymentInfo = new PaymentInfo(req.body);
+      const savedPaymentInfo = await newPaymentInfo.save();
+
+      req.user.savedPayments.push(savedPaymentInfo._id);
+      await req.user.save();
+
+      return res
+        .status(201)
+        .set('Location', `/${savedPaymentInfo._id}`)
+        .json(savedPaymentInfo);
+    } catch (err) {
+      return next(err);
+    }
+  })
   .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
-  .get((req, res) => {
-    res.end(`GET payment info for user ${req.params.userId}`);
-  })
-  .post((req, res) => {
-    res.end(`POST to create paymentInfo for user ${req.params.userId}`);
-  })
-  .put((req, res) => {
-    res.end('PUT not supported for payment info.');
-  })
-  .delete((req, res) => {
-    res.end('DELETE not supported for paymentInfo without ID');
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, POST')
+        .json({
+          message: `${req.method} is not supported on the /users/\${ID}/paymentInfo path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
   });
 router.post('/:userId/paymentInfo/:paymentInfoId', (req, res) => {
   res.end(
