@@ -169,24 +169,4 @@ router.delete('/:userId/savedOrders/:savedOrderId', (req, res) => {
   );
 });
 
-router
-  .route('/:userId/rewards')
-  .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
-  .get((req, res) => {
-    res.end(`GET rewards points count for user ${req.params.userId}`);
-  })
-  .post((req, res) => {
-    res.end(`POST to update rewards points for user ${req.params.userId}`);
-  })
-  .put((req, res) => {
-    res.end('PUT not supported for rewards.');
-  })
-  .delete((req, res) => {
-    res.end('DELETE not supported for rewards.');
-  });
-
 export default router;
