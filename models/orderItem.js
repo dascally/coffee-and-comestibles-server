@@ -13,7 +13,7 @@ const orderItemSchema = mongoose.Schema({
   },
   useRewards: {
     type: Boolean,
-    default: false,
+    required: false,
   },
 });
 
