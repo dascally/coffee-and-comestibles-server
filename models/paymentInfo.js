@@ -31,6 +31,14 @@ const paymentInfoSchema = mongoose.Schema({
   },
 });
 
+paymentInfoSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.cardNumberFinalDigits = returnedObject.cardNumber.slice(-4);
+    delete returnedObject.cardNumber;
+    delete returnedObject.securityCode;
+  },
+});
+
 const PaymentInfo = mongoose.model('PaymentInfo', paymentInfoSchema);
 
 export default PaymentInfo;
