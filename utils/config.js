@@ -7,4 +7,6 @@ const DB_URL =
     ? process.env.TEST_DB_URL
     : process.env.DB_URL;
 
-export { PORT, DB_URL };
+const SECRET = process.env.SECRET;
+
+export { PORT, DB_URL, SECRET };

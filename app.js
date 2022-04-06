@@ -4,6 +4,7 @@ import eventsRouter from './routes/events.js';
 import menuRouter from './routes/menu.js';
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
+import loginRouter from './routes/login.js';
 import { DB_URL } from './utils/config.js';
 
 const app = express();
@@ -26,10 +27,16 @@ app.use('/events', eventsRouter);
 app.use('/menu', menuRouter);
 app.use('/orders', ordersRouter);
 app.use('/users', usersRouter);
+app.use('/login', loginRouter);
 
 app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(400).json({ message: err.message });
+  } else if (err.name === 'AuthError') {
+    return res
+      .status(401)
+      .set('WWW-Authenticate', 'Bearer')
+      .json({ message: err.message });
   }
 
   return next(err);
