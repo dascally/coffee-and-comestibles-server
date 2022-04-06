@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { SECRET } from 'config.js';
+import { SECRET } from './config.js';
 
 const userExtractor = async (req, res, next) => {
   try {
