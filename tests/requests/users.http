@@ -1,4 +1,6 @@
 GET http://localhost:3002/users HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGNkMjE5NmExNDA3MjEyYmVjNzU4MiIsImlhdCI6MTY0OTIyNDMzNCwiZXhwIjoxNjQ5MjI3OTM0fQ.vRLrwXM0zML37N7c868b-e-ln0gGgEkIvqi81Ld9wNw
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQyYjUyM2I2N2RjNTg2YTE0N2Q0NCIsImlhdCI6MTY0OTIyNDYyMSwiZXhwIjoxNjQ5MjI4MjIxfQ.bD8tvxvWVkSF5OJkxkJGsSyzR_EOhVJWYw5gmS1-k_8
 
 ###
 
@@ -10,6 +12,18 @@ Content-Type: application/json
     "firstName": "Ebidaj",
     "lastName": "Paleu",
     "password": "very-secret-password"
+}
+
+###
+
+POST http://localhost:3002/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "admin@example.net",
+    "firstName": "Admin",
+    "lastName": "Istrator",
+    "password": "secretest-password"
 }
 
 ###

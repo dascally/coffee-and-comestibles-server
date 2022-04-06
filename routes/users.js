@@ -1,10 +1,23 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import { userExtractor, verifyAdmin } from '../utils/middleware.js';
 import User from '../models/user.js';
 const router = express.Router();
 
 router
   .route('/')
+  .get(userExtractor, verifyAdmin, async (req, res, next) => {
+    try {
+      const users = await User.find({}).populate([
+        'savedPayments',
+        'savedOrders',
+      ]);
+
+      return res.status(200).json(users);
+    } catch (err) {
+      return next(err);
+    }
+  })
   .post(async (req, res, next) => {
     try {
       const { email, firstName, lastName, password } = req.body;
@@ -34,7 +47,7 @@ router
     try {
       return res
         .status(405)
-        .set('Allow', 'POST')
+        .set('Allow', 'GET, POST')
         .json({
           message: `${req.method} is not supported on the /users path.`,
         });
