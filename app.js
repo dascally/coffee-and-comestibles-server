@@ -33,10 +33,11 @@ app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     return res.status(400).json({ message: err.message });
   } else if (err.name === 'AuthError') {
-    return res
-      .status(401)
-      .set('WWW-Authenticate', 'Bearer')
-      .json({ message: err.message });
+    if (err.status === 401) {
+      res.set('WWW-Authenticate', 'Bearer');
+    }
+
+    return res.status(err.status ?? 403).json({ message: err.message });
   }
 
   return next(err);

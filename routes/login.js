@@ -20,6 +20,7 @@ router
       if (!passwordMatches) {
         const err = new Error('Incorrect email or password.');
         err.name = 'AuthError';
+        err.status = 401;
         throw err;
       }
 

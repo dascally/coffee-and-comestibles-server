@@ -34,6 +34,10 @@ const userSchema = mongoose.Schema({
       ref: 'SavedOrder',
     },
   ],
+  admin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.set('toJSON', {
