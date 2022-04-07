@@ -139,21 +139,71 @@ router
     }
   });
 
+router
+  .route('/:userId/savedPayments/:paymentInfoId')
+  .get(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const paymentInfo = await PaymentInfo.findById(req.params.paymentInfoId);
+
+      if (paymentInfo) {
+        return res.status(200).json(paymentInfo);
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .put(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      if (Object.keys(req.body).length === 0) {
+        const err = new Error('No fields were specified for updating.');
+        err.name = 'ValidationError';
+        throw err;
+      }
+
+      const updatedPaymentInfo = await PaymentInfo.findByIdAndUpdate(
+        req.params.paymentInfoId,
+        req.body,
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedPaymentInfo) {
+        return res.status(404).end();
+      }
+
+      return res.status(200).json(updatedPaymentInfo);
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .delete(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const result = await PaymentInfo.findByIdAndDelete(
+        req.params.paymentInfoId
+      );
+
+      if (result) {
+        return res.status(204).end();
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .all((req, res, next) => {
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, PUT, DELETE')
+        .json({
+          message: `${req.method} is not supported on the /users/\${ID}/savedPayments/\${ID} path.`,
         });
     } catch (err) {
       return next(err);
     }
   });
-router.post('/:userId/paymentInfo/:paymentInfoId', (req, res) => {
-  res.end(
-    `POST to edit payment info (id ${req.params.paymentInfoId}) for user ${req.params.userId}`
-  );
-});
-router.delete('/:userId/paymentInfo/:paymentInfoId', (req, res) => {
-  res.end(
-    `DELETE to remove payment info (id ${req.params.paymentInfoId}) for user ${req.params.userId}`
-  );
-});
 
 router
   .route('/:userId/savedOrders')
