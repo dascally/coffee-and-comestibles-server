@@ -1,0 +1,21 @@
+GET http://localhost:3002/events HTTP/1.1
+
+###
+
+POST http://localhost:3002/events HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlNzUyNDRjYWNjMzA1NzQxYiIsImlhdCI6MTY0OTM1ODgxMiwiZXhwIjoxNjQ5MzYyNDEyfQ.VwjxDH2v6ir4HrjlKmXrkUr4DWsGPdUoNuesI815qew
+
+{
+    "title": "Event One",
+    "datetime": "2022-04-07T17:30:00-04:00",
+    "description": "A sample event."
+}
+
+###
+
+PUT http://localhost:3002/events HTTP/1.1
+
+###
+
+DELETE http://localhost:3002/events HTTP/1.1
