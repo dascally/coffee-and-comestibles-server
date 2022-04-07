@@ -9,6 +9,7 @@ import { createOrderList } from '../utils/helpers.js';
 import User from '../models/user.js';
 import PaymentInfo from '../models/paymentInfo.js';
 import SavedOrder from '../models/savedOrder.js';
+import OrderItem from '../models/orderItem.js';
 const router = express.Router();
 
 router
@@ -230,9 +231,17 @@ router
   })
   .post(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
-      const cookedOrderList = await createOrderList(req.body.orderList ?? []);
-      const cookedOrderIdList = cookedOrderList.map(
-        (orderItem) => orderItem._id
+      const orderList = await createOrderList(req.body.orderList ?? []);
+
+      const cookedOrderIdList = await Promise.all(
+        orderList.map(async (orderItem) => {
+          const newOrderItem = new OrderItem({
+            menuItem: orderItem.menuItem,
+            selectedOptions: orderItem.selectedOptions,
+          });
+          const savedOrderItem = await newOrderItem.save();
+          return savedOrderItem._id;
+        })
       );
 
       const newSavedOrder = new SavedOrder({
