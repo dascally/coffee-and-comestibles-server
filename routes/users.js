@@ -99,21 +99,24 @@ router
 
 router
   .route('/:userId/savedPayments')
-  .get(userExtractor, async (req, res, next) => {
+  .get(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
-      const user = await req.user.populate('savedPayments');
+      const user = await User.findById(req.params.userId).populate(
+        'savedPayments'
+      );
       return res.status(200).json(user.savedPayments);
     } catch (err) {
       return next(err);
     }
   })
-  .post(userExtractor, async (req, res, next) => {
+  .post(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
       const newPaymentInfo = new PaymentInfo(req.body);
       const savedPaymentInfo = await newPaymentInfo.save();
 
-      req.user.savedPayments.push(savedPaymentInfo._id);
-      await req.user.save();
+      const user = await User.findById(req.params.userId);
+      user.savedPayments.push(savedPaymentInfo._id);
+      await user.save();
 
       return res
         .status(201)
@@ -129,7 +132,13 @@ router
         .status(405)
         .set('Allow', 'GET, POST')
         .json({
-          message: `${req.method} is not supported on the /users/\${ID}/paymentInfo path.`,
+          message: `${req.method} is not supported on the /users/\${ID}/savedPayments path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
+  });
+
         });
     } catch (err) {
       return next(err);
