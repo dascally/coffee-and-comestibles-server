@@ -5,15 +5,6 @@ const router = express.Router();
 
 router
   .route('/')
-  .get((req, res, next) => {
-    try {
-      res.status(405).set('Allow', 'POST').json({
-        message: 'GET is not supported on the /order path. Try /order/${ID}.',
-      });
-    } catch (err) {
-      next(err);
-    }
-  })
   .post(async (req, res, next) => {
     try {
       const {
@@ -45,22 +36,16 @@ router
       next(err);
     }
   })
-  .put((req, res, next) => {
+  .all((req, res, next) => {
     try {
-      res.status(405).set('Allow', 'POST').json({
-        message: 'PUT is not supported on the /order path. Try /order/${ID}.',
-      });
+      return res
+        .status(405)
+        .set('Allow', 'POST')
+        .json({
+          message: `${req.method} is not supported on the /order path.`,
+        });
     } catch (err) {
-      next(err);
-    }
-  })
-  .delete((req, res, next) => {
-    try {
-      res.status(405).set('Allow', 'POST').json({
-        message: 'DELETE is not supported on the /order path.',
-      });
-    } catch (err) {
-      next(err);
+      return next(err);
     }
   });
 
@@ -138,14 +123,16 @@ router
       next(err);
     }
   })
-  .delete((req, res, next) => {
+  .all((req, res, next) => {
     try {
       return res
         .status(405)
         .set('Allow', 'GET, POST, PUT')
-        .json({ message: 'DELETE is not supported on the /order/${ID} path.' });
+        .json({
+          message: `${req.method} is not supported on the /order/\${ID} path.`,
+        });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   });
 

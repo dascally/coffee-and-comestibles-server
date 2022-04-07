@@ -43,22 +43,16 @@ router
       next(err);
     }
   })
-  .put((req, res, next) => {
+  .all((req, res, next) => {
     try {
-      return res.status(405).set('Allow', 'GET, POST').json({
-        message: 'PUT is not supported on the /menu path. Try /menu/${ID}.',
-      });
+      return res
+        .status(405)
+        .set('Allow', 'GET, POST')
+        .json({
+          message: `${req.method} is not supported on the /menu path.`,
+        });
     } catch (err) {
-      next(err);
-    }
-  })
-  .delete((req, res, next) => {
-    try {
-      return res.status(405).set('Allow', 'GET, POST').json({
-        message: 'DELETE is not supported on the /menu path. Try /menu/${ID}.',
-      });
-    } catch (err) {
-      next(err);
+      return next(err);
     }
   });
 
@@ -73,16 +67,6 @@ router
       } else {
         return res.status(404).end();
       }
-    } catch (err) {
-      next(err);
-    }
-  })
-  .post((req, res, next) => {
-    try {
-      return res
-        .status(405)
-        .set('Allow', 'GET, PUT, DELETE')
-        .json({ message: 'POST is not supported on the /menu/${ID} path.' });
     } catch (err) {
       next(err);
     }
@@ -115,6 +99,18 @@ router
       }
     } catch (err) {
       next(err);
+    }
+  })
+  .all((req, res, next) => {
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, PUT, DELETE')
+        .json({
+          message: `${req.method} is not supported on the /menu/\${ID} path.`,
+        });
+    } catch (err) {
+      return next(err);
     }
   });
 
