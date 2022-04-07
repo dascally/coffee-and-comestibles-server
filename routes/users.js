@@ -15,11 +15,16 @@ router
   .route('/')
   .get(userExtractor, verifyAdmin, async (req, res, next) => {
     try {
-      const users = await User.find({});
-      // .populate([
-      //   'savedPayments',
-      //   'savedOrders',
-      // ]);
+      const users = await User.find({}).populate([
+        'savedPayments',
+        {
+          path: 'savedOrders',
+          populate: {
+            path: 'orderList',
+            populate: { path: 'menuItem' },
+          },
+        },
+      ]);
 
       return res.status(200).json(users);
     } catch (err) {
