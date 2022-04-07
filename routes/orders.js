@@ -1,6 +1,6 @@
 import express from 'express';
+import { createOrderIdList } from '../utils/helpers.js';
 import Invoice from '../models/invoice.js';
-import OrderItem from '../models/orderItem.js';
 const router = express.Router();
 
 router
@@ -24,13 +24,7 @@ router
         orderList: rawOrderList,
       } = req.body;
 
-      const cookedOrderList = await Promise.all(
-        rawOrderList.map(async (orderItem) => {
-          const newOrderItem = new OrderItem(orderItem);
-          const savedOrderItem = await newOrderItem.save();
-          return savedOrderItem._id;
-        })
-      );
+      const cookedOrderList = await createOrderIdList(rawOrderList);
 
       const newInvoice = new Invoice({
         status: 'received',
@@ -124,13 +118,7 @@ router
         orderList: rawOrderList,
       } = req.body;
 
-      const cookedOrderList = await Promise.all(
-        rawOrderList.map(async (orderItem) => {
-          const newOrderItem = new OrderItem(orderItem);
-          const savedOrderItem = await newOrderItem.save();
-          return savedOrderItem._id;
-        })
-      );
+      const cookedOrderList = await createOrderIdList(rawOrderList);
 
       const updatedInvoice = await Invoice.findByIdAndUpdate(
         req.params.orderId,
