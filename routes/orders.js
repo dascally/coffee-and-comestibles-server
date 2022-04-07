@@ -1,29 +1,58 @@
 import express from 'express';
-import { createOrderIdList } from '../utils/helpers.js';
+import { createOrderList } from '../utils/helpers.js';
 import Invoice from '../models/invoice.js';
+import User from '../models/user.js';
 const router = express.Router();
+
+const extractOrderList = async (req, res, next) => {
+  const { userId, orderList: rawOrderList } = req.body;
+
+  const cookedOrderList = await createOrderList(rawOrderList);
+  const populatedOrderList = await Promise.all(
+    cookedOrderList.map((orderItem) => orderItem.populate('menuItem'))
+  );
+
+  // 1 reward point is equivalent to 1 cent
+  const totalRewardsBeingSpent = populatedOrderList.reduce((sum, orderItem) => {
+    return sum + (orderItem.useRewards ? orderItem.menuItem.price : 0);
+  }, 0);
+
+  if (totalRewardsBeingSpent > 0 && !userId) {
+    return res.status(400).json({
+      message: 'Can not spend rewards points without an account.',
+    });
+  }
+
+  const user = await User.findById(userId);
+  if (userId && !user) {
+    return res
+      .status(400)
+      .json({ message: `User ID ${userId} can not be found.` });
+  }
+
+  if (user && totalRewardsBeingSpent > user.rewards) {
+    return res
+      .status(400)
+      .json({ message: 'User does not have enough rewards points.' });
+  }
+
+  const cookedOrderIdList = cookedOrderList.map((orderItem) => orderItem._id);
+  req.orderIdList = cookedOrderIdList;
+
+  return next();
+};
 
 router
   .route('/')
-  .post(async (req, res, next) => {
+  .post(extractOrderList, async (req, res, next) => {
     try {
-      const {
-        contactPhone,
-        contactName,
-        ccInfo,
-        user,
-        orderList: rawOrderList,
-      } = req.body;
-
-      const cookedOrderList = await createOrderIdList(rawOrderList);
-
       const newInvoice = new Invoice({
         status: 'received',
-        contactPhone,
-        contactName,
-        ccInfo,
-        user,
-        orderList: cookedOrderList,
+        contactPhone: req.body.contactPhone,
+        contactName: req.body.contactName,
+        ccInfo: req.body.ccInfo,
+        user: req.body.userId,
+        orderList: req.orderIdList,
       });
 
       const savedInvoice = await newInvoice.save();
@@ -53,7 +82,9 @@ router
   .route('/:orderId')
   .get(async (req, res, next) => {
     try {
-      const invoice = await Invoice.findById(req.params.orderId);
+      const invoice = await Invoice.findById(req.params.orderId).populate(
+        'orderList'
+      );
 
       if (invoice) {
         return res.status(200).json(invoice);
@@ -84,7 +115,7 @@ router
       next(err);
     }
   })
-  .put(async (req, res, next) => {
+  .put(extractOrderList, async (req, res, next) => {
     try {
       const invoice = await Invoice.findById(req.params.orderId);
       if (!invoice) {
@@ -95,25 +126,15 @@ router
           .json({ message: 'PUT may only be used to modify standing orders.' });
       }
 
-      const {
-        contactPhone,
-        contactName,
-        ccInfo,
-        user,
-        orderList: rawOrderList,
-      } = req.body;
-
-      const cookedOrderList = await createOrderIdList(rawOrderList);
-
       const updatedInvoice = await Invoice.findByIdAndUpdate(
         req.params.orderId,
         {
           status: 'received',
-          contactPhone,
-          contactName,
-          ccInfo,
-          user,
-          orderList: cookedOrderList,
+          contactPhone: req.body.contactPhone,
+          contactName: req.body.contactName,
+          ccInfo: req.body.ccInfo,
+          user: req.body.userId,
+          orderList: req.orderIdList,
         },
         { new: true, runValidators: true }
       );

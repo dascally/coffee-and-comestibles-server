@@ -5,7 +5,7 @@ import {
   verifyAdmin,
   verifySelfOrAdmin,
 } from '../utils/middleware.js';
-import { createOrderIdList } from '../utils/helpers.js';
+import { createOrderList } from '../utils/helpers.js';
 import User from '../models/user.js';
 import PaymentInfo from '../models/paymentInfo.js';
 import SavedOrder from '../models/savedOrder.js';
@@ -230,10 +230,14 @@ router
   })
   .post(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
     try {
-      const cookedOrderList = await createOrderIdList(req.body.orderList ?? []);
+      const cookedOrderList = await createOrderList(req.body.orderList ?? []);
+      const cookedOrderIdList = cookedOrderList.map(
+        (orderItem) => orderItem._id
+      );
+
       const newSavedOrder = new SavedOrder({
         name: req.body.name,
-        orderList: cookedOrderList,
+        orderList: cookedOrderIdList,
       });
       const savedSavedOrder = await newSavedOrder.save();
 
@@ -287,13 +291,16 @@ router
         throw err;
       }
 
-      const cookedOrderList = await createOrderIdList(req.body.orderList ?? []);
+      const cookedOrderList = await createOrderList(req.body.orderList ?? []);
+      const cookedOrderIdList = cookedOrderList.map(
+        (orderItem) => orderItem._id
+      );
 
       const updatedSavedOrder = await SavedOrder.findByIdAndUpdate(
         req.params.savedOrderId,
         {
           name: req.body.name,
-          orderList: cookedOrderList,
+          orderList: cookedOrderIdList,
         },
         { new: true, runValidators: true }
       );
