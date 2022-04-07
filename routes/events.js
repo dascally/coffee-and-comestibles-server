@@ -48,22 +48,61 @@ router
 
 router
   .route('/:eventId')
+  .get(async (req, res, next) => {
+    try {
+      const event = await Event.findById(req.params.eventId);
+
+      if (event) {
+        res.status(200).json(event);
+      } else {
+        res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .put(userExtractor, verifyAdmin, async (req, res, next) => {
+    try {
+      const updatedEvent = await Event.findByIdAndUpdate(
+        req.params.eventId,
+        {
+          title: req.body.title,
+          datetime: new Date(req.body.datetime),
+          description: req.body.description,
+          image: req.body.image || undefined,
+        },
+        { new: true, runValidators: true }
+      );
+
+      return res.status(200).json(updatedEvent);
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .delete(userExtractor, verifyAdmin, async (req, res, next) => {
+    try {
+      const result = await Event.findByIdAndDelete(req.params.eventId);
+
+      if (result) {
+        return res.status(204).end();
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
   .all((req, res, next) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.write(`Got a request at /events/${req.params.eventId}.\n`);
-    next();
-  })
-  .get((req, res) => {
-    res.end(`Got a GET request for the event ${req.params.eventId}.`);
-  })
-  .post((req, res) => {
-    res.end('This will be used to edit an event. (POST)');
-  })
-  .put((req, res) => {
-    res.end('PUT not supported');
-  })
-  .delete((req, res) => {
-    res.end('This will DELETE an event.');
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, PUT, DELETE')
+        .json({
+          message: `${req.method} is not supported on the /events/\${ID} path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
   });
 
 export default router;
