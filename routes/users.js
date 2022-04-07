@@ -5,8 +5,10 @@ import {
   verifyAdmin,
   verifySelfOrAdmin,
 } from '../utils/middleware.js';
+import { createOrderIdList } from '../utils/helpers.js';
 import User from '../models/user.js';
 import PaymentInfo from '../models/paymentInfo.js';
+import SavedOrder from '../models/savedOrder.js';
 const router = express.Router();
 
 router
@@ -207,32 +209,125 @@ router
 
 router
   .route('/:userId/savedOrders')
+  .get(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const user = await User.findById(req.params.userId).populate({
+        path: 'savedOrders',
+        populate: {
+          path: 'orderList',
+          populate: { path: 'menuItem' },
+        },
+      });
+      return res.status(200).json(user.savedOrders);
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .post(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const cookedOrderList = await createOrderIdList(req.body.orderList ?? []);
+      const newSavedOrder = new SavedOrder({
+        name: req.body.name,
+        orderList: cookedOrderList,
+      });
+      const savedSavedOrder = await newSavedOrder.save();
+
+      const user = await User.findById(req.params.userId);
+      user.savedOrders.push(savedSavedOrder._id);
+      await user.save();
+
+      return res
+        .status(201)
+        .set('Location', `/${savedSavedOrder._id}`)
+        .json(savedSavedOrder);
+    } catch (err) {
+      return next(err);
+    }
+  })
   .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
-  .get((req, res) => {
-    res.end(`GET saved orders for user ${req.params.userId}`);
-  })
-  .post((req, res) => {
-    res.end(`POST to create saved order for user ${req.params.userId}`);
-  })
-  .put((req, res) => {
-    res.end('PUT not supported for saved orders.');
-  })
-  .delete((req, res) => {
-    res.end('DELETE not supported for savedOrders without ID');
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, POST')
+        .json({
+          message: `${req.method} is not supported on the /users/\${ID}/savedOrders path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
   });
-router.post('/:userId/savedOrders/:savedOrderId', (req, res) => {
-  res.end(
-    `POST to edit saved order (id ${req.params.savedOrderId}) for user ${req.params.userId}`
-  );
-});
-router.delete('/:userId/savedOrders/:savedOrderId', (req, res) => {
-  res.end(
-    `DELETE to remove saved order (id ${req.params.savedOrderId}) for user ${req.params.userId}`
-  );
-});
+
+router
+  .route('/:userId/savedOrders/:savedOrderId')
+  .get(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const savedOrder = await SavedOrder.findById(
+        req.params.savedOrderId
+      ).populate({ path: 'orderList', populate: { path: 'menuItem' } });
+
+      if (savedOrder) {
+        return res.status(200).json(savedOrder);
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .put(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      if (Object.keys(req.body).length === 0) {
+        const err = new Error('No fields were specified for updating.');
+        err.name = 'ValidationError';
+        throw err;
+      }
+
+      const cookedOrderList = await createOrderIdList(req.body.orderList ?? []);
+
+      const updatedSavedOrder = await SavedOrder.findByIdAndUpdate(
+        req.params.savedOrderId,
+        {
+          name: req.body.name,
+          orderList: cookedOrderList,
+        },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedSavedOrder) {
+        return res.status(404).end();
+      }
+
+      return res.status(200).json(updatedSavedOrder);
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .delete(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      const result = await SavedOrder.findByIdAndDelete(
+        req.params.savedOrderId
+      );
+
+      if (result) {
+        return res.status(204).end();
+      } else {
+        return res.status(404).end();
+      }
+    } catch (err) {
+      return next(err);
+    }
+  })
+  .all((req, res, next) => {
+    try {
+      return res
+        .status(405)
+        .set('Allow', 'GET, PUT, DELETE')
+        .json({
+          message: `${req.method} is not supported on the /users/\${ID}/savedOrders/\${ID} path.`,
+        });
+    } catch (err) {
+      return next(err);
+    }
+  });
 
 export default router;
