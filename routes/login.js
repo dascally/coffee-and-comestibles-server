@@ -28,7 +28,13 @@ router
 
       const token = jwt.sign(tokenPayload, SECRET, { expiresIn: 60 * 60 });
 
-      return res.status(200).json({ token });
+      return res.status(200).json({
+        token,
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
     } catch (err) {
       return next(err);
     }
