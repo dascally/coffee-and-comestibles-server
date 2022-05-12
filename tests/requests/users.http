@@ -68,7 +68,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQyYjUyM
 ###
 
 GET http://localhost:3002/users/624d34ac023215e067762c00/savedPayments HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY1MjIxMjY1NiwiZXhwIjoxNjUyMjE2MjU2fQ.NDrgffFHiv0Fe4Y_up8XbAiQBRwLn8NTaBCl87GEcEw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY1MjMwMTcxMiwiZXhwIjoxNjUyMzA1MzEyfQ.eKdAv8P99z-uW8scF1v-rB86q5r2I8O_DOA-aasGk54
 
 ###
 
@@ -98,8 +98,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlN
 
 ###
 
-GET http://localhost:3002/users/624d34ac023215e067762c00/savedPayments/624e03bf94fc037e048e5c65 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlNzUyNDRjYWNjMzA1NzQxYiIsImlhdCI6MTY0OTI5MjQzNSwiZXhwIjoxNjQ5Mjk2MDM1fQ._4tFtniNzZ98a6YmKrUksWBoSTpZlREZzNw9MGCOyVU
+GET http://localhost:3002/users/624d34ac023215e067762c00/savedPayments/624e34c38ee8a865fa41099e HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY1MjMwMTcxMiwiZXhwIjoxNjUyMzA1MzEyfQ.eKdAv8P99z-uW8scF1v-rB86q5r2I8O_DOA-aasGk54
 
 ###
 
@@ -108,16 +108,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlN
 
 ###
 
-PUT http://localhost:3002/users/624d34ac023215e067762c00/savedPayments/624e03bf94fc037e048e5c65 HTTP/1.1
+PUT http://localhost:3002/users/624d34ac023215e067762c00/savedPayments/624e34c38ee8a865fa41099e HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzZmVlNzUyNDRjYWNjMzA1NzQxYiIsImlhdCI6MTY0OTI5MjQzNSwiZXhwIjoxNjQ5Mjk2MDM1fQ._4tFtniNzZ98a6YmKrUksWBoSTpZlREZzNw9MGCOyVU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY1MjMwMTcxMiwiZXhwIjoxNjUyMzA1MzEyfQ.eKdAv8P99z-uW8scF1v-rB86q5r2I8O_DOA-aasGk54
 
 {
-  "cardNumber": "1234-5678-8765-1111",
-  "securityCode": "123",
+#   "cardNumber": "1234-5678-8765-1111",
+#   "securityCode": "123",
   "billingName": "Ebidaj Paleu",
   "streetAddress": "123 Street Road",
-  "city": "Citypolis",
+  "city": "Polis",
   "state": "ST",
   "zipCode": "12345"
 }

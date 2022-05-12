@@ -20,10 +20,12 @@ const menuItemSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  options: {
-    type: Map,
-    of: [String],
-  },
+  options: [
+    {
+      name: String,
+      suboptions: [String],
+    },
+  ],
 });
 
 const MenuItem = mongoose.model('MenuItem', menuItemSchema);
