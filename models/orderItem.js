@@ -8,8 +8,7 @@ const orderItemSchema = mongoose.Schema({
   },
   selectedOptions: {
     type: Map,
-    // FIXME: may make this a map. e.g. {flavors: {vanilla: 3, chocolate: 1}}
-    of: [String],
+    of: String,
   },
   useRewards: {
     type: Boolean,
