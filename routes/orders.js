@@ -56,11 +56,14 @@ router
       });
 
       const savedInvoice = await newInvoice.save();
+      const invoice = await Invoice.findById(savedInvoice._id).populate(
+        'orderList'
+      );
 
       return res
         .status(201)
         .set('Location', `/${savedInvoice._id}`)
-        .json(savedInvoice);
+        .json(invoice);
     } catch (err) {
       next(err);
     }
