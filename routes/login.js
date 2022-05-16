@@ -26,7 +26,7 @@ router
 
       const tokenPayload = { id: user._id };
 
-      const token = jwt.sign(tokenPayload, SECRET, { expiresIn: 60 * 60 });
+      const token = jwt.sign(tokenPayload, SECRET, { expiresIn: 60 * 60 * 24 });
 
       return res.status(200).json({
         token,
