@@ -136,7 +136,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjM
 
 POST http://localhost:3002/users/624d34ac023215e067762c00/savedOrders HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY0OTM3MDA1MywiZXhwIjoxNjQ5MzczNjUzfQ.WoxXw5FD07PWyy7WP_uWDd9xe9NiGdmNiUtkDjH4w_4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNGQzNGFjMDIzMjE1ZTA2Nzc2MmMwMCIsImlhdCI6MTY1MjY2NDYxNCwiZXhwIjoxNjUyNjY4MjE0fQ.8ggK0msLzJGRNF3q6I2yh1mw_b3qy0PeOzmS8dbleKw
 
 {
     "name": "Sample saved order",

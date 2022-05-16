@@ -30,30 +30,6 @@ Content-Type: application/json
         ]
 }
 
-# {
-#     "orderList":
-#         [
-#             {
-#                 "menuItem":"627d933eac6d628282e20f2f",
-#                 "selectedOptions":{"Chocolate syrup":"1 pump"},
-#                 "useRewards":false,"id":"f4bBO5BqmDEXe9M4JIEii"
-#             },
-#             {
-#                 "menuItem":"627d933eac6d628282e20f37",
-#                 "selectedOptions":{"Strawberry syrup":"1 pump"},
-#                 "useRewards":false,"id":"TW9aQzbQCLAvuicdpkqAk"
-#             },
-#             {
-#                 "menuItem":"627d933eac6d628282e20f3a","selectedOptions":{},
-#                 "useRewards":false,
-#                 "id":"2VolcrrHkblagZBaSe2KW"
-#             }
-#         ],
-#     "contactPhone":"1234567890",
-#     "contactName":"Ebidaj Paleu",
-#     "ccInfo":"624e34c38ee8a865fa41099e"
-# }
-
 ###
 
 PUT http://localhost:3002/orders HTTP/1.1

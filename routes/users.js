@@ -259,10 +259,14 @@ router
       user.savedOrders.push(savedSavedOrder._id);
       await user.save();
 
+      const savedOrder = await SavedOrder.findById(
+        savedSavedOrder._id
+      ).populate({ path: 'orderList', populate: { path: 'menuItem' } });
+
       return res
         .status(201)
         .set('Location', `/${savedSavedOrder._id}`)
-        .json(savedSavedOrder);
+        .json(savedOrder);
     } catch (err) {
       return next(err);
     }
