@@ -191,6 +191,11 @@ router
         req.params.paymentInfoId
       );
 
+      req.user.savedPayments = req.user.savedPayments.filter(
+        (payment) => payment._id.toString() !== req.params.paymentInfoId
+      );
+      req.user.save();
+
       if (result) {
         return res.status(204).end();
       } else {
