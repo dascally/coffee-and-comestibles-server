@@ -1,5 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import {
   userExtractor,
   verifyAdmin,
@@ -10,6 +11,7 @@ import User from '../models/user.js';
 import PaymentInfo from '../models/paymentInfo.js';
 import SavedOrder from '../models/savedOrder.js';
 import OrderItem from '../models/orderItem.js';
+import { SECRET } from '../utils/config.js';
 const router = express.Router();
 
 router
@@ -49,10 +51,18 @@ router
       const newUser = new User({ email, firstName, lastName, passwordHash });
       const savedUser = await newUser.save();
 
-      return res
-        .status(201)
-        .set('Location', `/${savedUser._id}`)
-        .json(savedUser);
+      const tokenPayload = { id: savedUser._id };
+      const token = jwt.sign(tokenPayload, SECRET, { expiresIn: 60 * 60 * 24 });
+
+      const user = {
+        token,
+        id: savedUser._id,
+        email: savedUser.email,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
+      };
+
+      return res.status(201).set('Location', `/${savedUser._id}`).json(user);
     } catch (err) {
       return next(err);
     }
