@@ -56,9 +56,9 @@ router
       });
 
       const savedInvoice = await newInvoice.save();
-      const invoice = await Invoice.findById(savedInvoice._id).populate(
-        'orderList'
-      );
+      const invoice = await Invoice.findById(savedInvoice._id)
+        .populate({ path: 'orderList', populate: { path: 'menuItem' } })
+        .populate('ccInfo');
 
       return res
         .status(201)
