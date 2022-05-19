@@ -28,7 +28,28 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:3002/users HTTP/1.1
+POST http://localhost:3002/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "test@example.net",
+    "firstName": "Test",
+    "lastName": "User",
+    "password": "password"
+}
+
+###
+
+PUT http://localhost:3002/users/62858bb1003530f0a75e3618 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODU4YmIxMDAzNTMwZjBhNzVlMzYxOCIsImlhdCI6MTY1MjkxOTIxNywiZXhwIjoxNjUzMDA1NjE3fQ.32KzyW-3TkxlpvATnn7wz96bxv3T4fsxxmhFXljW38M
+
+{
+    # "firstName": "Testy"
+    # "lastName": "Browser"
+    # "email": "new@email.com"
+    "password": "new-password"
+}
 
 ###
 

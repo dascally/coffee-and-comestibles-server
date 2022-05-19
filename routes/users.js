@@ -102,11 +102,40 @@ router
       return next(err);
     }
   })
+  .put(userExtractor, verifySelfOrAdmin, async (req, res, next) => {
+    try {
+      if (Object.keys(req.body).length === 0) {
+        const err = new Error('No fields were specified for updating.');
+        err.name = 'ValidationError';
+        throw err;
+      }
+
+      if (req.body.password) {
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(req.body.password, saltRounds);
+        req.body.passwordHash = passwordHash;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.userId,
+        req.body,
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).end();
+      }
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      return next(err);
+    }
+  })
   .all((req, res, next) => {
     try {
       return res
         .status(405)
-        .set('Allow', 'GET, DELETE')
+        .set('Allow', 'GET, PUT, DELETE')
         .json({
           message: `${req.method} is not supported on the /users/\${ID} path.`,
         });
