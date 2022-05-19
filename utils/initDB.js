@@ -3,6 +3,7 @@ import app from '../app.js';
 import mongoose from 'mongoose';
 import { PORT } from './config.js';
 import MenuItem from '../models/menuItem.js';
+import Event from '../models/event.js';
 
 const MENU = [
   {
@@ -18,13 +19,7 @@ const MENU = [
         options: [
           {
             name: 'Milk type',
-            suboptions: [
-              'Whole milk',
-              'Skim milk',
-              'Soy milk',
-              'Almond milk',
-              'Macadamia milk',
-            ],
+            suboptions: ['Whole', 'Skim', 'Soy', 'Almond', 'Macadamia'],
           },
           {
             name: 'Chocolate syrup',
@@ -46,13 +41,7 @@ const MENU = [
         options: [
           {
             name: 'Milk type',
-            suboptions: [
-              'Whole milk',
-              'Skim milk',
-              'Soy milk',
-              'Almond milk',
-              'Macadamia milk',
-            ],
+            suboptions: ['Whole', 'Skim', 'Soy', 'Almond', 'Macadamia'],
           },
         ],
       },
@@ -131,6 +120,30 @@ const MENU = [
   },
 ];
 
+const EVENTS = [
+  {
+    title: 'Open mic',
+    datetime: '2022-05-19T22:00Z',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus recusandae tempora cum sequi, reprehenderit iste impedit facere dignissimos nihil quas quam architecto incidunt suscipit sint numquam earum non, deleniti similique?',
+    image: { src: 'event.jpg', alt: 'A nonexistant placeholder image' },
+  },
+  {
+    title: 'Trivia night',
+    datetime: '2022-05-20T23:00Z',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa, similique cum voluptatem repudiandae accusamus dolorum veritatis! Cumque vero eum in, officia illo repellat asperiores laboriosam, quo odio voluptas dolorem? Aliquam!',
+    image: { src: 'event.jpg', alt: 'A nonexistant placeholder image' },
+  },
+  {
+    title: 'Open mic',
+    datetime: '2022-05-26T22:00Z',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, repudiandae porro itaque consequatur odio vitae sunt molestias eaque illo exercitationem, tenetur corporis recusandae deserunt sit explicabo dolore magni veniam veritatis!',
+    image: { src: 'event.jpg', alt: 'A nonexistant placeholder image' },
+  },
+];
+
 const server = http.createServer(app);
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}.`);
@@ -138,6 +151,9 @@ server.listen(PORT, () => {
 
 await MenuItem.deleteMany({});
 console.log('Existing menu data cleared.');
+
+await Event.deleteMany({});
+console.log('Existing event data cleared.');
 
 const result = await (async () => {
   return await Promise.all(
@@ -163,7 +179,15 @@ const result = await (async () => {
       );
 
       return savedMenuSection;
-    })
+    }).concat(
+      EVENTS.map(async (event) => {
+        const { title, datetime, description, image } = event;
+        const newEvent = new Event({ title, datetime, description, image });
+        const savedEvent = await newEvent.save();
+
+        return savedEvent;
+      })
+    )
   );
 })();
 

@@ -13,8 +13,8 @@ const eventSchema = mongoose.Schema({
     type: String,
   },
   image: {
-    type: String,
-    // FIXME: Add path to default image
+    src: String,
+    alt: String,
   },
 });
 
