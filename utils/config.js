@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-const PORT = process.env.port ?? 3002;
+const PORT = process.env.PORT ?? 3002;
 
 const DB_URL =
   process.env.NODE_ENV === 'test'
