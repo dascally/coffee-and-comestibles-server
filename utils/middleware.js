@@ -14,6 +14,23 @@ const cors = async (req, res, next) => {
   }
 };
 
+const corsPreflight = async (req, res, next) => {
+  try {
+    if (
+      req.get('Access-Control-Request-Method') &&
+      req.get('Access-Control-Request-Headers')
+    ) {
+      res.set({
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Header': 'Content-Type',
+      });
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const userExtractor = async (req, res, next) => {
   try {
     const authorizationHeader = req.get('Authorization');
@@ -75,4 +92,4 @@ const verifySelfOrAdmin = async (req, res, next) => {
   }
 };
 
-export { cors, userExtractor, verifyAdmin, verifySelfOrAdmin };
+export { cors, corsPreflight, userExtractor, verifyAdmin, verifySelfOrAdmin };
