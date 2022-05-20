@@ -1,6 +1,18 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { SECRET } from './config.js';
+import { CLIENT_ORIGIN, SECRET } from './config.js';
+
+const cors = async (req, res, next) => {
+  try {
+    if (req.get('Origin')) {
+      res.set({ 'Access-Control-Allow-Origin': CLIENT_ORIGIN });
+    }
+
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+};
 
 const userExtractor = async (req, res, next) => {
   try {
@@ -63,4 +75,4 @@ const verifySelfOrAdmin = async (req, res, next) => {
   }
 };
 
-export { userExtractor, verifyAdmin, verifySelfOrAdmin };
+export { cors, userExtractor, verifyAdmin, verifySelfOrAdmin };

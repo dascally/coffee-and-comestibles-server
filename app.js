@@ -6,6 +6,7 @@ import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
 import loginRouter from './routes/login.js';
 import { DB_URL } from './utils/config.js';
+import { cors } from './utils/middleware.js';
 
 const app = express();
 mongoose
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+app.use(cors);
 app.use(express.json());
 app.use('/events', eventsRouter);
 app.use('/menu', menuRouter);
