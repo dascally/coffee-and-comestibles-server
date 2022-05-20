@@ -16,6 +16,7 @@ const cors = async (req, res, next) => {
 
 const corsPreflight = async (req, res, next) => {
   try {
+    console.log('cors preflight');
     if (
       req.get('Access-Control-Request-Method') &&
       req.get('Access-Control-Request-Headers')
