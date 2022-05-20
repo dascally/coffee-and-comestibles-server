@@ -25,7 +25,8 @@ const corsPreflight = async (req, res, next) => {
         'Access-Control-Allow-Header': 'Content-Type',
       });
     }
-    return next();
+
+    return res.end();
   } catch (err) {
     return next(err);
   }
