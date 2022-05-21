@@ -16,14 +16,13 @@ const cors = async (req, res, next) => {
 
 const corsPreflight = async (req, res, next) => {
   try {
-    process.stdout.write('cors preflight\n');
     if (
       req.get('Access-Control-Request-Method') &&
       req.get('Access-Control-Request-Headers')
     ) {
       res.set({
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Header': 'Content-Type',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       });
     }
 

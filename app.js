@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(cors);
-app.options(corsPreflight);
+app.options('*', corsPreflight);
 app.use(express.json());
 app.use('/events', eventsRouter);
 app.use('/menu', menuRouter);
